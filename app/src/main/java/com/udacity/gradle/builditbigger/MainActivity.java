@@ -1,6 +1,5 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -8,8 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.JokeLibrary;
-
-import uk.co.nanodegree.androidjokelibrary.JokeMainActivity;
+import com.udacity.gradle.builditbigger.async.EndpointGCMAsyncTask;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
     public void tellJoke(View view){
         // This is the implementation for Step 1
         // Toast.makeText(this, jokeLibrary.getJoke(), Toast.LENGTH_SHORT).show();
+        /* This is the implementation for Step 2
         String joke = jokeLibrary.getJoke();
         Intent intent = new Intent(this, JokeMainActivity.class);
         intent.putExtra(JokeMainActivity.INTENT_EXTRA_JOKE, joke);
-        startActivity(intent);
+        startActivity(intent);*/
+        new EndpointGCMAsyncTask(this).execute();
     }
 
 
