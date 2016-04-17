@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Pair;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.cudaf.nanodegree.backend.jokeApi.JokeApi;
 import com.example.cudaf.nanodegree.backend.jokeApi.model.Joke;
@@ -29,28 +31,20 @@ public class EndpointGCMAsyncTask extends AsyncTask<Pair<Context, String>, Void,
     private static JokeApi mJokeApi = null;
     private String mJoke;
     private InterstitialAd mInterstitialAd;
+    private ProgressBar mProgressBar;
 
 
-    public EndpointGCMAsyncTask(Context context) {
+    public EndpointGCMAsyncTask(Context context, ProgressBar progressBar) {
         mContext = context;
+        mProgressBar = progressBar;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mInterstitialAd = new InterstitialAd(mContext);
-        mInterstitialAd.setAdUnitId(mContext.getResources().getString(R.string.interstitial_ad_unit_id));
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                startJokeMainActivity();
-            }
-        });
-        AdRequest adRequest = new AdRequest
-                .Builder()
-                .addTestDevice(mContext.getResources().getString(R.string.test_device_id))
-                .build();
-        mInterstitialAd.loadAd(adRequest);
+        if (mProgressBar != null){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -85,12 +79,38 @@ public class EndpointGCMAsyncTask extends AsyncTask<Pair<Context, String>, Void,
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         mJoke = s;
-        //display the interstitial ad
-        if (mInterstitialAd.isLoaded()){
-            mInterstitialAd.show();
-        } else {
-            startJokeMainActivity();
-        }
+        //generate interstitial
+        mInterstitialAd = new InterstitialAd(mContext);
+        mInterstitialAd.setAdUnitId(mContext.getResources().getString(R.string.interstitial_ad_unit_id));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (mProgressBar != null){
+                    mProgressBar.setVisibility(View.GONE);
+                }
+                mInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                super.onAdFailedToLoad(errorCode);
+                if (mProgressBar != null){
+                    mProgressBar.setVisibility(View.GONE);
+                }
+                startJokeMainActivity();
+            }
+
+            @Override
+            public void onAdClosed() {
+                startJokeMainActivity();
+            }
+        });
+        AdRequest adRequest = new AdRequest
+                .Builder()
+                .addTestDevice(mContext.getResources().getString(R.string.test_device_id))
+                .build();
+        mInterstitialAd.loadAd(adRequest);
     }
 
     private void startJokeMainActivity() {

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.JokeLibrary;
 import com.udacity.gradle.builditbigger.async.EndpointGCMAsyncTask;
@@ -13,13 +14,17 @@ import com.udacity.gradle.builditbigger.async.EndpointGCMAsyncTask;
 public class MainActivity extends AppCompatActivity {
 
     //This part is for Step 1: Create a Java library
-    private JokeLibrary jokeLibrary;
+    //private JokeLibrary jokeLibrary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        jokeLibrary = new JokeLibrary();
+        //jokeLibrary = new JokeLibrary();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment, new MainActivityFragment())
+                .commit();
     }
 
 
@@ -53,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, JokeMainActivity.class);
         intent.putExtra(JokeMainActivity.INTENT_EXTRA_JOKE, joke);
         startActivity(intent);*/
-        new EndpointGCMAsyncTask(this).execute();
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        new EndpointGCMAsyncTask(this, progressBar).execute();
     }
 
 

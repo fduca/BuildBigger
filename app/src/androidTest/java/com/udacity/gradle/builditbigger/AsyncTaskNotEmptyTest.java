@@ -16,7 +16,7 @@ public class AsyncTaskNotEmptyTest extends AndroidTestCase{
 
     public void test(){
         String jokeResult = null;
-        EndpointGCMAsyncTask endpointGCMAsyncTask = new EndpointGCMAsyncTask(getContext());
+        EndpointGCMAsyncTask endpointGCMAsyncTask = new EndpointGCMAsyncTask(getContext(), null);
         endpointGCMAsyncTask.execute();
         try{
             jokeResult = endpointGCMAsyncTask.get();

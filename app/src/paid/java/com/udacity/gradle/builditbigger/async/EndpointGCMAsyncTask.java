@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Pair;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.cudaf.nanodegree.backend.jokeApi.JokeApi;
 import com.example.cudaf.nanodegree.backend.jokeApi.model.Joke;
@@ -25,10 +27,20 @@ public class EndpointGCMAsyncTask  extends AsyncTask<Pair<Context, String>, Void
     private Context mContext;
     private static JokeApi mJokeApi = null;
     private String mJoke;
+    private ProgressBar mProgressBar;
 
 
-    public EndpointGCMAsyncTask(Context context){
+    public EndpointGCMAsyncTask(Context context, ProgressBar progressBar){
         mContext = context;
+
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        if (mProgressBar != null){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -61,6 +73,9 @@ public class EndpointGCMAsyncTask  extends AsyncTask<Pair<Context, String>, Void
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        if (mProgressBar != null){
+            mProgressBar.setVisibility(View.GONE);
+        }
         mJoke = s;
         startJokeMainActivity();
     }
